@@ -2,3 +2,4 @@ Flask>=2.3.3
 openai>=1.66.3  # Adjusted version based on latest Responses API support
 PyPDF2>=3.0.1
 python-dotenv>=1.0.0
+markdown>=3.3.4
