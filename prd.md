@@ -22,7 +22,7 @@ Participants in the recreational soccer league often struggle with:
 - Understanding nuanced league rules buried in lengthy documentation.
 - Keeping up with evolving best practices for coaching youth soccer.
 - Identifying equipment that complies with league standards without extensive research.
-- Accessing this information conveniently during practices, games, or shopping.
+- Accessing this information conveniently during practices, games, or while shopping.
 
 The Soccer League AI Helper Chatbot addresses these challenges by providing a single, conversational point of access to tailored information.
 
@@ -35,7 +35,7 @@ The Soccer League AI Helper Chatbot addresses these challenges by providing a si
 - Provide a user-friendly chat interface for real-time assistance.
 
 ### 2.2 Success Metrics
-- **User Engagement**: 75% of league participants (parents, coaches, referees) use the chatbot at least once per season.
+- **User Engagement**: 25% of league participants (parents, coaches, referees) use the chatbot at least once per season.
 - **Accuracy**: 95% of responses correctly reference league rules or provide relevant web-sourced information.
 - **Response Time**: Average response time under 5 seconds.
 - **Satisfaction**: 80% positive feedback in a post-season survey on usability and helpfulness.
@@ -48,13 +48,13 @@ The Soccer League AI Helper Chatbot addresses these challenges by providing a si
 - **Description**: The chatbot can interpret and respond to questions about league rules by referencing a provided PDF document (e.g., "What size ball is used for U10 games?").
 - **Requirements**:
   - Upload and parse a static PDF containing the league’s rules (e.g., using `PyPDF2` or OpenAI’s document understanding capabilities).
-  - Store extracted text in a format accessible to the AI agent (e.g., vectorized embeddings for semantic search).
+  - Store extracted text in a format accessible to the AI agent.
   - Respond with direct quotes or summaries from the PDF, with context (e.g., "According to Section 2.3 of the rules, U10 games use a size 4 ball.").
 
 #### 3.1.2 Web Search for Coaching Best Practices
 - **Description**: The chatbot searches the web for recent best practices in coaching youth soccer (e.g., "What are the latest tips for coaching 8-year-olds?").
 - **Requirements**:
-  - Integrate a web search capability (e.g., via a custom implementation using `requests` and `beautifulsoup4` or a third-party API) to fetch current articles, blogs, or studies (within the last 1-2 years).
+  - Integrate a web search capability to fetch current articles, blogs, or studies (within the last 1-2 years).
   - Summarize findings in a concise, actionable format (e.g., "Recent articles suggest focusing on small-sided games to improve engagement for 8-year-olds.").
 
 #### 3.1.3 Equipment Recommendations
@@ -68,12 +68,11 @@ The Soccer League AI Helper Chatbot addresses these challenges by providing a si
 - **Requirements**:
   - Simple, responsive HTML/CSS/JavaScript frontend (e.g., a chat window with input box and message history).
   - Backend Flask server to handle user inputs, API calls, and response rendering.
-  - Real-time message display without page refresh (e.g., using AJAX or WebSockets).
+  - Real-time message display without page refresh.
 
 ### 3.2 Non-Functional Requirements
 - **Availability**: Accessible whenever local server has been started.
 - **Scalability**: Handle up to 100 concurrent users (assuming a small league).
-- **Security**: Protect the PDF and user interactions with basic authentication (e.g., username/password for league members).
 - **Performance**: Responses delivered within 5 seconds under normal load.
 
 ## 4. Technical Requirements
@@ -81,35 +80,18 @@ The Soccer League AI Helper Chatbot addresses these challenges by providing a si
 ### 4.1 Technology Stack
 - **Backend**:
   - Python 3.9+ with Flask for the web server.
-  - OpenAI Chat Completions API (via `openai` Python SDK) for AI responses.
+  - OpenAI Responses API (via `openai` Python SDK) for AI responses.
   - `PyPDF2` for PDF parsing.
-  - `requests` and `beautifulsoup4` for web search functionality.
 - **Frontend**:
   - HTML/CSS/JavaScript for the chat UI.
-  - Bootstrap for responsive design (optional).
 - **Dependencies**:
   - Listed in `requirements.txt`.
 - **Hosting**:
-  - Local deployment (e.g., on a Raspberry Pi) or cloud (e.g., Heroku, AWS).
+  - Local deployment or cloud.
 
-### 4.2 API Integration
-- **OpenAI Chat Completions API**:
-  - Use the `chat.completions.create` endpoint.
-  - Example call:
-    ```python
-    response = openai.chat.completions.create(
-        model="gpt-4o",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": "What are the latest coaching tips for youth soccer?"}
-        ]
-    )
-    ```
-  - Pass the PDF content as part of the system prompt.
-
-### 4.3 Data Sources
+### 4.2 Data Sources
 - **League Rules PDF**: Static file uploaded by the league administrator.
-- **Web Search**: Real-time results via a custom web search implementation (e.g., using DuckDuckGo HTML scraping).
+- **Web Search**: Real-time results via an OpenAI web search implementation.
 
 ## 5. User Interface Mockup
 
@@ -145,8 +127,8 @@ The Soccer League AI Helper Chatbot addresses these challenges by providing a si
 
 ### 7.1 Constraints
 - OpenAI API costs (requires an API key and budget).
-- PDF must be provided in a readable format (no scanned images).
-- Web search accuracy depends on the custom implementation’s capabilities.
+- PDF must be provided in a readable format.
+- Web search accuracy depends on OpenAI's capabilities.
 
 ### 7.2 Assumptions
 - League rules PDF is static and updated manually by an admin.
@@ -161,15 +143,14 @@ The Soccer League AI Helper Chatbot addresses these challenges by providing a si
 - Parse and test PDF rule lookup.
 - Add web search for coaching tips and equipment.
 - Refine response formatting and accuracy.
-- Implement basic authentication.
 - Deploy locally.
-- Test with 10-20 league participants.
-- Gather feedback and fix bugs.
 
 ### 8.2 Phase 2: Potential Improvements (1 Week)
 - Fix any formatting issues from the response.
 - Host the chatbot so that it can be accessible outside of localhost.
-
+- Test with 10-20 league participants.
+- Gather feedback and fix bugs.
+- Implement basic authentication.
 
 ## 9. Risks and Mitigation
 
@@ -179,45 +160,3 @@ The Soccer League AI Helper Chatbot addresses these challenges by providing a si
 - **Mitigation**: Pre-process PDF into text manually if needed.
 - **Risk**: Web search results are outdated or irrelevant.
 - **Mitigation**: Filter results by date; allow manual override with trusted sources.
-
-## 10. Appendix
-
-### 10.1 Sample Code Snippet
-Here’s a starting point for the Flask backend:
-
-```python
-from flask import Flask, request, jsonify
-import openai
-import PyPDF2
-
-app = Flask(__name__)
-openai.api_key = "your-api-key"
-
-# Load and parse PDF
-def load_rules_pdf(file_path):
-  with open(file_path, 'rb') as file:
-      pdf = PyPDF2.PdfReader(file)
-      text = ""
-      for page in pdf.pages:
-          text += page.extract_text()
-  return text
-
-rules_text = load_rules_pdf("league_rules.pdf")
-
-@app.route('/chat', methods=['POST'])
-def chat():
-  data = request.json
-  user_input = data.get('message', '').strip()
-  
-  response = openai.chat.completions.create(
-      model="gpt-4o",
-      messages=[
-          {"role": "system", "content": f"You are a helper for a soccer league. Use this context for rules: {rules_text}"},
-          {"role": "user", "content": user_input}
-      ]
-  )
-  
-  return jsonify({'response': response.choices[0].message.content})
-
-if __name__ == '__main__':
-  app.run(debug=True, port=5000)
