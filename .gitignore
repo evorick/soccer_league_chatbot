@@ -36,3 +36,6 @@ ENV/
 # OS specific
 .DS_Store
 Thumbs.db
+
+# Reference PDF's
+league_rules.pdf
