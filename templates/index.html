@@ -22,13 +22,13 @@
             const message = input.value.trim();
             if (!message) return;
 
-            // Display user message
             const chatBox = document.getElementById('chat-box');
-            chatBox.innerHTML += `<div class="message user-message">${message}</div>`;
+            
+            // Display user message
+            chatBox.innerHTML += `<div class="message user-message">${escapeHtml(message)}</div>`;
             input.value = '';
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            // Send request to server
             try {
                 const response = await fetch('/chat', {
                     method: 'POST',
@@ -37,20 +37,27 @@
                 });
                 const data = await response.json();
 
-                // Display bot response
+                // Display bot response, preserving formatting
                 const botMessage = data.response || data.error || 'Something went wrong.';
                 chatBox.innerHTML += `<div class="message bot-message">${botMessage}</div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
             } catch (error) {
-                chatBox.innerHTML += `<div class="message bot-message">Error: ${error.message}</div>`;
+                chatBox.innerHTML += `<div class="message bot-message">Error: ${escapeHtml(error.message)}</div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
             }
         }
 
-        // Allow sending message with Enter key
+        // Allow sending messages with the Enter key
         document.getElementById('message-input').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendMessage();
         });
+
+        // Function to escape HTML to prevent XSS attacks
+        function escapeHtml(text) {
+            let div = document.createElement("div");
+            div.textContent = text;
+            return div.innerHTML;
+        }
     </script>
 </body>
 </html>
